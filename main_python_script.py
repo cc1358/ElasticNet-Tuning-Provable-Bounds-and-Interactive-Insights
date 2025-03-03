@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -62,7 +61,10 @@ def tune_elasticnet_batch(n, p, lambda_max=1.0, adjustment=None):
     losses = Parallel(n_jobs=-1)(delayed(compute_loss)(l1, l2) for l1 in lambda_range for l2 in lambda_range)
     
     avg_loss, best_lambda = min(losses, key=lambda x: x[0])
-    _, opt_loss = min([tune_elasticnet_batch(100, p, lambda_max, adjustment)[0] for _ in range(3)], key=lambda x: x[0])
+    
+    # Compute the optimal loss by finding the best lambda combination
+    opt_loss = min([compute_loss(l1, l2)[0] for l1 in lambda_range for l2 in lambda_range])
+    
     return avg_loss, best_lambda, avg_loss - opt_loss
 
 # --- Online Learning with EXP3 Bandit ---
